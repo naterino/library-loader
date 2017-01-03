@@ -16,10 +16,10 @@
 			    	mapLib = libraryStorage[dependency];
 			    	return mapLib.callback.apply(this, mapLib.dependencies);
 		    	});
-      libraryStorage[libraryName].result = library.callback.apply(this, dependencies);
+      			libraryStorage[libraryName].result = library.callback.apply(this, dependencies);
 		    	libraryStorage[libraryName].cached = true;
 	    	}
-		    return libraryStorage[libraryName].result;
+		return libraryStorage[libraryName].result;
 	    }
   }
 
