@@ -1,3 +1,4 @@
+
 (function () {
   var libraryStorage = {};
 
@@ -27,6 +28,46 @@
 })();
 
 
+/*(function () {
+  var libraryStorage = {};
+
+  function librarySystem(libraryName, dependencies, callback) {
+    if (arguments.length > 1) {
+      libraryStorage[libraryName] = {
+        dependencies: dependencies,
+        callback: callback,
+        cached: false,
+
+      };
+    } else {
+      return dependencyLoader(libraryName);
+    }
+  }
+
+  function dependencyLoader(libraryName) {
+     var dependencies = []
+     var storedLibrary = libraryStorage[libraryName];
+
+     if(storedLibrary.dependencies.length) {
+        dependencies = storedLibrary.dependencies.map(function(dependencyName){
+          return dependencyLoader(dependencyName);
+        });
+     }
+
+     if(storedLibrary.cached) {
+        return storedLibrary.cachedResult;
+     }
+
+     var callbackResult = storedLibrary.callback.apply(null, dependencies);
+     storedLibrary.cachedResult = callbackResult;
+     storedLibrary.cached = true;
+     return callbackResult;
+
+  }
+
+  window.librarySystem = librarySystem;
+})();
+*/
 tests({
   'If only provided a library name it should return it.': function () {
     librarySystem('name', [], function () {
@@ -69,22 +110,26 @@ tests({
     eq(result, 'Gordon works at Watch and Code');
   },
 
-  'It should allow you to load depenencies out of order.': function () {
-    librarySystem('workBlurb', ['name', 'company'], function (name, company) {
+  'It should allow you to load dependencies out of order.': function () {
+    librarySystem('fullBlurb', ['workBlurb2'], function (workBlurb2) {
+      return 'Another layer of text: ' + workBlurb2;
+    });
+
+    librarySystem('workBlurb2', ['name2', 'company2'], function (name, company) {
 		  return name + ' works at ' + company;
     });
 
-    librarySystem('name', [], function () {
+    librarySystem('name2', [], function () {
 		  return 'Gordon';
     });
 
-    librarySystem('company', [], function () {
+    librarySystem('company2', [], function () {
 		  return 'Watch and Code';
     });
+           
+    var result = librarySystem('fullBlurb');
 
-    var result = librarySystem('workBlurb');
-
-    eq(result, 'Gordon works at Watch and Code');
+    eq(result, 'Another layer of text: Gordon works at Watch and Code');
   }
 
 
