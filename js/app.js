@@ -2,27 +2,27 @@
   var libraryStorage = {};
 
   function librarySystem(libraryName, dependencies, callback) {
-	    if (arguments.length > 1) {
-	    	libraryStorage[libraryName] = {
-	    		dependencies: dependencies,
-	    		callback: callback,
-	    		cached: false
-	    	};
-	    } else {
-	    	var library = libraryStorage[libraryName];
+    if (arguments.length > 1) {
+      libraryStorage[libraryName] = {
+        dependencies: dependencies,
+        callback: callback,
+        cached: false
+      };
+    } else {
+      var library = libraryStorage[libraryName];
+      var loadedDependencies = [];
 
-	    	if (library.cached === false) {
-	    		var dependencies = library.dependencies.map(function (dependency) {
-			    	mapLib = libraryStorage[dependency];
-			    	return mapLib.callback.apply(this, mapLib.dependencies);
-		    	});
-      			libraryStorage[libraryName].result = library.callback.apply(this, dependencies);
-		    	libraryStorage[libraryName].cached = true;
-	    	}
-		return libraryStorage[libraryName].result;
-	    }
+      if (library.cached === false) {
+        var loadedDependencies = library.dependencies.map(function (dependency) {
+            return librarySystem(dependency);
+        });
+
+        libraryStorage[libraryName].cachedResult = library.callback.apply(this, loadedDependencies);
+        libraryStorage[libraryName].cached = true;
+      }
+      return libraryStorage[libraryName].cachedResult;
+    }
   }
-
   window.librarySystem = librarySystem;
 })();
 
