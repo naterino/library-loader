@@ -28,46 +28,6 @@
 })();
 
 
-/*(function () {
-  var libraryStorage = {};
-
-  function librarySystem(libraryName, dependencies, callback) {
-    if (arguments.length > 1) {
-      libraryStorage[libraryName] = {
-        dependencies: dependencies,
-        callback: callback,
-        cached: false,
-
-      };
-    } else {
-      return dependencyLoader(libraryName);
-    }
-  }
-
-  function dependencyLoader(libraryName) {
-     var dependencies = []
-     var storedLibrary = libraryStorage[libraryName];
-
-     if(storedLibrary.dependencies.length) {
-        dependencies = storedLibrary.dependencies.map(function(dependencyName){
-          return dependencyLoader(dependencyName);
-        });
-     }
-
-     if(storedLibrary.cached) {
-        return storedLibrary.cachedResult;
-     }
-
-     var callbackResult = storedLibrary.callback.apply(null, dependencies);
-     storedLibrary.cachedResult = callbackResult;
-     storedLibrary.cached = true;
-     return callbackResult;
-
-  }
-
-  window.librarySystem = librarySystem;
-})();
-*/
 tests({
   'If only provided a library name it should return it.': function () {
     librarySystem('name', [], function () {
